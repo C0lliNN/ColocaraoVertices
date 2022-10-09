@@ -57,6 +57,7 @@ class GraphTest {
             assertTrue(graph.hasVertex("Rio de Janeiro"));
             assertTrue(graph.hasVertex("Minas Gerais"));
             assertTrue(graph.hasEdge("Rio de Janeiro", "Minas Gerais"));
+            assertTrue(graph.hasEdge("Minas Gerais", "Rio de Janeiro"));
         }
 
         @Test
@@ -68,6 +69,7 @@ class GraphTest {
 
             assertTrue(graph.hasVertex("Minas Gerais"));
             assertTrue(graph.hasEdge("Rio de Janeiro", "Minas Gerais"));
+            assertTrue(graph.hasEdge("Minas Gerais", "Rio de Janeiro"));
         }
 
         @Test
@@ -79,6 +81,7 @@ class GraphTest {
             graph.addEdge("Rio de Janeiro", "Minas Gerais");
 
             assertTrue(graph.hasEdge("Rio de Janeiro", "Minas Gerais"));
+            assertTrue(graph.hasEdge("Minas Gerais", "Rio de Janeiro"));
         }
     }
 
@@ -107,7 +110,7 @@ class GraphTest {
             Graph<String> graph = new Graph<>();
             graph.addEdge("Rio de Janeiro", "Minas Gerais");
 
-            assertEquals(1, graph.getEdgesCount());
+            assertEquals(2, graph.getEdgesCount());
         }
     }
 }

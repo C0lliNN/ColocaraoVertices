@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-class Graph<T> {
+public class Graph<T> {
     // Estamos usando um Hashmap para armazenar as arestar de cada vértice
     private final Map<T, List<T> > map = new HashMap<>();
 
@@ -25,6 +25,7 @@ class Graph<T> {
         }
 
         map.get(source).add(destination);
+        map.get(destination).add(source);
     }
 
     // Esse método retorna a quantidade de vértices no grafo
