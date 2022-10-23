@@ -58,6 +58,10 @@ public class Graph<T> {
         return edges;
     }
 
+    public Map<T, List<T>> getAdjacencyList() {
+        return new HashMap<>(map);
+    }
+
     // Essé metodo verifica se um determinado vértice está presente ou não no grafo.
     public boolean hasVertex(T s) {
         return map.containsKey(s);

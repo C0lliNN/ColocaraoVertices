@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -148,6 +149,31 @@ class GraphTest {
 
             assertTrue(edges.contains(List.of(10, 8)));
             assertTrue(edges.contains(List.of(8, 10)));
+        }
+    }
+
+    @Nested
+    @DisplayName("Get Adjacency List")
+    class GetAdjacencyListClass {
+
+        @Test
+        @DisplayName("when called, then it should return a new object with the adjacency list")
+        void whenCalled_shouldReturnANewObjectWithTheAdjacencyList() {
+            Graph<Integer> graph = new Graph<>();
+            graph.addEdge(4, 3);
+            graph.addEdge(2, 4);
+            graph.addEdge(1, 8);
+            graph.addEdge(2, 9);
+            graph.addEdge(10, 8);
+
+            Map<Integer, List<Integer>> adjacencyList = graph.getAdjacencyList();
+
+            assertTrue(adjacencyList.keySet().containsAll(List.of(1, 2, 4, 10)));
+
+            assertTrue(adjacencyList.containsValue(List.of(4, 9)));
+            assertTrue(adjacencyList.containsValue(List.of(3, 2)));
+            assertTrue(adjacencyList.containsValue(List.of(1, 10)));
+            assertTrue(adjacencyList.containsValue(List.of(8)));
         }
     }
 }
