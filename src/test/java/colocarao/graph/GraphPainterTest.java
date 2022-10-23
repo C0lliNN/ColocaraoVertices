@@ -5,9 +5,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GraphPainterTest {
 
@@ -22,40 +27,40 @@ class GraphPainterTest {
         }
 
         @Test
-        @DisplayName("when the graph is empty, it should return an empty map")
-        void whenTheGraphIsEmpty_shouldReturnAnEmptyMap() {
+        @DisplayName("when the graph is empty, it should return a valid result")
+        void whenTheGraphIsEmpty_shouldReturnAValidResult() {
             Graph<Integer> graph = new Graph<>();
 
-            assertEquals(0, painter.paintGraph(graph).size());
+            Map<Integer, Integer> solution = painter.paintGraph(graph);
+
+            validateSolution(graph, solution);
         }
 
         @Test
-        @DisplayName("when the graph has one element, it should return a map with one element")
-        void whenTheGraphHasOneElement_shouldReturnAMapWithOneElement() {
+        @DisplayName("when the graph has one element, it should return a valid result")
+        void whenTheGraphHasOneElement_shouldReturnAValidResult() {
             Graph<Integer> graph = new Graph<>();
             graph.addVertex(5);
 
-            var expected = Map.of(5, Color.RED);
-            var actual = painter.paintGraph(graph);
+            Map<Integer, Integer> solution = painter.paintGraph(graph);
 
-            assertEquals(expected, actual);
+            validateSolution(graph, solution);
         }
 
         @Test
-        @DisplayName("when the graph has two elements, it should return the correct map")
+        @DisplayName("when the graph has two elements, it should return a valid result")
         void whenTheGraphHasTwoElements_shouldReturnTheCorrectMap() {
             Graph<Integer> graph = new Graph<>();
             graph.addEdge(8, 10);
 
-            var expected = Map.of(8, Color.RED, 5, Color.BLACK);
-            var actual = painter.paintGraph(graph);
+            Map<Integer, Integer> solution = painter.paintGraph(graph);
 
-            assertEquals(expected, actual);
+            validateSolution(graph, solution);
         }
 
         @Test
-        @DisplayName("when the graph has five elements, it should return the correct map")
-        void whenTheGraphHasFiveElements_shouldReturnTheCorrectMap() {
+        @DisplayName("when the graph has five elements, it should return a valid result")
+        void whenTheGraphHasFiveElements_shouldReturnAValidResult() {
             Graph<Integer> graph = new Graph<>();
             graph.addEdge(8, 10);
             graph.addEdge(10, 12);
@@ -63,20 +68,13 @@ class GraphPainterTest {
             graph.addEdge(5, 10);
             graph.addEdge(5, 12);
 
-            var expected = Map.of(
-                    8, Color.RED,
-                    10, Color.BLACK,
-                    12, Color.RED,
-                    4, Color.RED,
-                    5, Color.GREEN
-            );
-            var actual = painter.paintGraph(graph);
+            Map<Integer, Integer> solution = painter.paintGraph(graph);
 
-            assertEquals(expected, actual);
+            validateSolution(graph, solution);
         }
 
         @Test
-        @DisplayName("when the graph has ten elements, it should return the correct map")
+        @DisplayName("when the graph has ten elements, it should return a valid result")
         void whenTheGraphHasTenElements_shouldReturnTheCorrectMap() {
             Graph<Integer> graph = new Graph<>();
             graph.addVertex(2);
@@ -102,22 +100,97 @@ class GraphPainterTest {
             graph.addEdge(19, 9);
             graph.addEdge(19, 15);
 
-            var expected = Map.of(
-                    2, Color.RED,
-                    4, Color.BLACK,
-                    3, Color.RED,
-                    8, Color.BLACK,
-                    15, Color.RED,
-                    12, Color.RED,
-                    19, Color.BLACK,
-                    9, Color.GREEN,
-                    5, Color.RED,
-                    13, Color.BLACK
-            );
-            var actual = painter.paintGraph(graph);
+            Map<Integer, Integer> solution = painter.paintGraph(graph);
 
-            assertEquals(expected, actual);
+            validateSolution(graph, solution);
+        }
+
+        @Test
+        @DisplayName("when the graph has 11 vertexes and 20 edges, it should return a valid result")
+        void whenTheGraphHas11VertexesAnd20Edges_shouldReturnAValidResult() {
+            Graph<Integer> graph = createGraphFromFile("myciel3.col");
+
+            Map<Integer, Integer> solution = painter.paintGraph(graph);
+
+            validateSolution(graph, solution);
+        }
+
+        @Test
+        @DisplayName("when the graph has 23 vertexes and 71 edges, it should return a valid result")
+        void whenTheGraphHas23VertexesAnd71Edges_shouldReturnAValidResult() {
+            Graph<Integer> graph = createGraphFromFile("myciel4.col");
+
+            Map<Integer, Integer> solution = painter.paintGraph(graph);
+
+            validateSolution(graph, solution);
+        }
+
+        @Test
+        @DisplayName("when the graph has 47 vertexes and 236 edges, it should return a valid result")
+        void whenTheGraphHas47VertexesAnd236Edges_shouldReturnAValidResult() {
+            Graph<Integer> graph = createGraphFromFile("myciel5.col");
+
+            Map<Integer, Integer> solution = painter.paintGraph(graph);
+
+            validateSolution(graph, solution);
+        }
+
+        @Test
+        @DisplayName("when the graph has 25 vertexes and 320 edges, it should return a valid result")
+        void whenTheGraphHas25VertexesAnd320Edges_shouldReturnAValidResult() {
+            Graph<Integer> graph = createGraphFromFile("queen5_5.col");
+
+            Map<Integer, Integer> solution = painter.paintGraph(graph);
+
+            validateSolution(graph, solution);
+        }
+
+        @Test
+        @DisplayName("when the graph has 64 vertexes and 1456 edges, it should return a valid result")
+        void whenTheGraphHas64VertexesAnd1456Edges_shouldReturnAValidResult() {
+            Graph<Integer> graph = createGraphFromFile("queen8_8.col");
+
+            Map<Integer, Integer> solution = painter.paintGraph(graph);
+
+            validateSolution(graph, solution);
         }
     }
 
+    private Graph<Integer> createGraphFromFile(String file) {
+        try {
+            Path path = Path.of(getClass().getClassLoader().getResource(file).toURI());
+            List<String> lines = Files.readAllLines(path);
+
+            Graph<Integer> graph = new Graph<>();
+
+            lines.stream()
+                    .filter(l -> l.startsWith("e"))
+                    .map(l -> l.split(" "))
+                    .map(e -> new int[]{Integer.parseInt(e[1]), Integer.parseInt(e[2])})
+                    .forEach(e -> graph.addEdge(e[0], e[1]));
+
+            return graph;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private <T> void validateSolution(Graph<T> graph, Map<T, Integer> solution) {
+        // O número de vértices no grafo tem que ser igual ao número de vértices da solução
+        assertEquals(graph.getVertexCount(), solution.size());
+
+        List<List<T>> edges = graph.getEdges();
+
+        // Para cada aresta no grafo, verifique que as cores são diferentes
+        for (List<T> edge : edges) {
+            T source = edge.get(0);
+            T destination = edge.get(1);
+
+            assertTrue(solution.containsKey(source));
+            assertTrue(solution.containsKey(destination));
+
+            assertNotEquals(solution.get(source), solution.get(destination));
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package colocarao.graph;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,7 +41,21 @@ public class Graph<T> {
             count += map.get(v).size();
         }
 
-        return count;
+        // O contador está sendo divido por 2 porque se trate de uma grafo não direcionado e no método addEdge está sendo
+        // inserida duas areastas para cada chamada.
+        return count / 2;
+    }
+
+    public List<List<T>> getEdges() {
+        List<List<T>> edges = new ArrayList<>();
+
+        for (T v : map.keySet()) {
+            for (T a : map.get(v)) {
+                edges.add(List.of(v, a));
+            }
+        }
+
+        return edges;
     }
 
     // Essé metodo verifica se um determinado vértice está presente ou não no grafo.

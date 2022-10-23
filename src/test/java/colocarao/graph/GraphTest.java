@@ -4,6 +4,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class GraphTest {
@@ -90,8 +92,8 @@ class GraphTest {
     class GetVertexCountClass {
 
         @Test
-        @DisplayName("when called, it should return the amount of vertexes")
-        void whenCalled_shouldReturnTheAmountOfVertexes() {
+        @DisplayName("when there are no edges, it should return the amount of vertexes")
+        void whenThereAreNoEdges_shouldReturnTheAmountOfVertexes() {
             Graph<String> graph = new Graph<>();
             graph.addVertex("Rio de Janeiro");
             graph.addVertex("Minas Gerais");
@@ -109,8 +111,43 @@ class GraphTest {
         void whenCalled_shouldReturnTheAmountOfEdges() {
             Graph<String> graph = new Graph<>();
             graph.addEdge("Rio de Janeiro", "Minas Gerais");
+            graph.addEdge("São Paulo", "Minas Gerais");
+            graph.addEdge("Rio de Janeiro", "São paylo");
 
-            assertEquals(2, graph.getEdgesCount());
+            assertEquals(3, graph.getEdgesCount());
+        }
+    }
+
+    @Nested
+    @DisplayName("Get Edges")
+    class GetEdgesClass {
+
+        @Test
+        @DisplayName("when called, it should return all the edges")
+        void whenCalled_shouldReturnAllTheEdges() {
+            Graph<Integer> graph = new Graph<>();
+            graph.addEdge(4, 3);
+            graph.addEdge(2, 4);
+            graph.addEdge(1, 8);
+            graph.addEdge(2, 9);
+            graph.addEdge(10, 8);
+
+            List<List<Integer>> edges = graph.getEdges();
+
+            assertTrue(edges.contains(List.of(3, 4)));
+            assertTrue(edges.contains(List.of(4, 3)));
+
+            assertTrue(edges.contains(List.of(2, 4)));
+            assertTrue(edges.contains(List.of(4, 2)));
+
+            assertTrue(edges.contains(List.of(1, 8)));
+            assertTrue(edges.contains(List.of(8, 1)));
+
+            assertTrue(edges.contains(List.of(2, 9)));
+            assertTrue(edges.contains(List.of(9, 2)));
+
+            assertTrue(edges.contains(List.of(10, 8)));
+            assertTrue(edges.contains(List.of(8, 10)));
         }
     }
 }
