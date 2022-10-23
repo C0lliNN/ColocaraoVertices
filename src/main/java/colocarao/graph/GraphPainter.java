@@ -2,10 +2,12 @@ package colocarao.graph;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class GraphPainter {
-    private int numberOfIterations;
+    private final int numberOfIterations;
 
     public GraphPainter() {
         this(10);
@@ -31,7 +33,37 @@ public class GraphPainter {
     }
 
     private <T> Map<T, Integer>  buildInitialSolution(Graph<T> graph) {
-        return new HashMap<>();
+        Map<T, Integer> solution = new HashMap<>();
+
+        Map<T, List<T>> adjacencyList = graph.getAdjacencyList();
+
+        for (T v : adjacencyList.keySet()) {
+            Set<Integer> neighboorsColors = new HashSet<>();
+
+            for (T e : adjacencyList.get(v)) {
+                if (solution.containsKey(e)) {
+                    neighboorsColors.add(solution.get(e));
+                }
+            }
+
+            int max = 0;
+
+            for (Integer color : neighboorsColors) {
+                if (color > max) {
+                    max = color;
+                }
+            }
+
+            for (int i = 0; i <= max + 1; i++) {
+                if (!neighboorsColors.contains(i)) {
+                    solution.put(v, i);
+                    break;
+                }
+            }
+
+        }
+
+        return solution;
     }
 
     private <T> void applyLocalSearch(Graph<T> graph, Map<T, Integer> solution) {

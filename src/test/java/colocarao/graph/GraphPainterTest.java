@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -179,6 +180,8 @@ class GraphPainterTest {
     private <T> void validateSolution(Graph<T> graph, Map<T, Integer> solution) {
         // O número de vértices no grafo tem que ser igual ao número de vértices da solução
         assertEquals(graph.getVertexCount(), solution.size());
+
+        System.out.println(new HashSet<>(solution.values()).size());
 
         List<List<T>> edges = graph.getEdges();
 
