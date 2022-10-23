@@ -155,6 +155,16 @@ class GraphPainterTest {
 
             validateSolution(graph, solution);
         }
+
+        @Test
+        @DisplayName("when the graph has 450 vertexes and 8260 edges, it should return a valid result")
+        void whenTheGraphHas450VertexesAnd8260Edges_shouldReturnAValidResult() {
+            Graph<Integer> graph = createGraphFromFile("le450_25a.col");
+
+            Map<Integer, Integer> solution = painter.paintGraph(graph);
+
+            validateSolution(graph, solution);
+        }
     }
 
     private Graph<Integer> createGraphFromFile(String file) {

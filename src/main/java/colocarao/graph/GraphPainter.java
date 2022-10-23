@@ -107,6 +107,6 @@ public class GraphPainter {
         int currentTotalColors = new HashSet<>(currentBestSolution.values()).size();
         int newTotalColors = new HashSet<>(newSolution.values()).size();
 
-        return newTotalColors > currentTotalColors;
+        return newTotalColors < currentTotalColors;
     }
 }
